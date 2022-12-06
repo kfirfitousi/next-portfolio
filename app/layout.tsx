@@ -1,18 +1,19 @@
-import './globals.css'
+import "./globals.css";
+
+import { Inter } from "@next/font/google";
+import clsx from "clsx";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export default function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
-      {/*
-        <head /> will contain the components returned by the nearest parent
-        head.tsx. Find out more at https://beta.nextjs.org/docs/api-reference/file-conventions/head
-      */}
+    <html lang="en" className={clsx("bg-background font-sans", inter.variable)}>
       <head />
-      <body>{children}</body>
+      <body className="min-h-screen">{children}</body>
     </html>
-  )
+  );
 }

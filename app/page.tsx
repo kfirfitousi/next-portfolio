@@ -1,57 +1,153 @@
-import Image from 'next/image'
-import styles from './page.module.css'
+"use client";
+
+import { motion, useScroll, useTransform } from "framer-motion";
+
+import { Github, Linkedin, FileDown, ArrowDown } from "lucide-react";
+import { GradientText } from "../components/gradient-text";
+import { Logo } from "../components/logo";
+import { Button } from "../components/button";
+import Link from "next/link";
 
 export default function Home() {
+  const { scrollYProgress } = useScroll();
+
+  const logoX = useTransform(scrollYProgress, [0, 1 / 4], ["50vw", "10vw"]);
+  const logoScale = useTransform(scrollYProgress, [0, 1 / 4], [1, 0.5]);
+
+  const iconsOpacity = useTransform(
+    scrollYProgress,
+    [0, 1 / 4, 1 / 3],
+    [0, 0.2, 1]
+  );
+
+  const headingScale = useTransform(scrollYProgress, [0, 1 / 5], [1, 0.5]);
+  const headingOpacity = useTransform(scrollYProgress, [0, 1 / 5], [1, 0]);
+
+  const aboutScale = useTransform(
+    scrollYProgress,
+    [0, 1 / 2, 4 / 5],
+    [0.5, 1, 0.5]
+  );
+  const aboutOpacity = useTransform(
+    scrollYProgress,
+    [0, 1 / 2, 4 / 5],
+    [0, 1, 0]
+  );
+
   return (
-    <div className={styles.container}>
-      <main className={styles.main}>
-        <h1 className={styles.title}>
-          Welcome to <a href="https://nextjs.org">Next.js 13!</a>
-        </h1>
+    <>
+      <motion.div
+        className="fixed top-8"
+        style={{ x: logoX, scale: logoScale }}
+      >
+        <Logo className="mx-auto h-fit w-48 sm:w-64" />
+      </motion.div>
 
-        <p className={styles.description}>
-          Get started by editing{' '}
-          <code className={styles.code}>app/page.tsx</code>
-        </p>
+      <motion.div
+        className="fixed top-16 flex w-full justify-end pr-[10vw]"
+        style={{
+          opacity: iconsOpacity,
+        }}
+      >
+        <div className="flex flex-row space-x-4">
+          <Link href="" className="text-accent">
+            <Github className="h-8 w-8" />
+          </Link>
 
-        <div className={styles.grid}>
-          <a href="https://beta.nextjs.org/docs" className={styles.card}>
-            <h2>Documentation &rarr;</h2>
-            <p>Find in-depth information about Next.js 13</p>
-          </a>
+          <FileDown className="h-8 w-8 text-secondary" />
 
-          <a
-            href="https://github.com/vercel/next.js/tree/canary/examples"
-            className={styles.card}
-          >
-            <h2>Examples &rarr;</h2>
-            <p>Explore the Next.js 13 playground.</p>
-          </a>
-
-          <a
-            href="https://vercel.com/templates/next.js/app-directory?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.card}
-          >
-            <h2>Deploy &rarr;</h2>
-            <p>Deploy your Next.js site to a public URL with Vercel.</p>
-          </a>
+          <Link href="" className="text-tertiary">
+            <Linkedin className="h-8 w-8" />
+          </Link>
         </div>
-      </main>
+      </motion.div>
 
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
+      <motion.div className="fixed top-[15vh] left-[5vw] h-[75vh] w-0.5">
+        <motion.div
+          className="absolute top-0 left-0 z-10 h-[75vh] w-0.5 origin-top bg-accent"
+          style={{
+            scaleY: scrollYProgress,
+          }}
+        />
+        <div className="h-[75vh] bg-primary bg-opacity-20" />
+      </motion.div>
+
+      <div className="flex h-screen flex-col items-center justify-center">
+        <motion.div
+          className="flex flex-col space-y-2"
+          style={{
+            scale: headingScale,
+            opacity: headingOpacity,
+          }}
         >
-          Powered by{' '}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
+          <GradientText className="mx-auto text-center text-3xl font-semibold sm:text-4xl">
+            Full Stack Developer
+          </GradientText>
+          <div className="flex flex-row justify-center space-x-5">
+            <Button
+              label="GitHub"
+              href="https://github.com/kfirfitousi"
+              color="accent"
+              icon={<Github />}
+            />
+            <Button
+              label="CV"
+              href="/Kfir_Fitousi_CV.pdf"
+              color="secondary"
+              icon={<FileDown />}
+            />
+            <Button
+              label="LinkedIn"
+              href="https://linkedin.com/in/kfirp"
+              color="tertiary"
+              icon={<Linkedin />}
+            />
+          </div>
+        </motion.div>
+        {/* <section className="mx-auto mb-4 self-end text-primary">
+          <ArrowDown />
+        </section> */}
+      </div>
+
+      <div className="flex h-screen flex-col items-center justify-center space-y-3">
+        <motion.div
+          className="mx-auto w-screen px-8 text-center text-2xl font-semibold sm:w-3/4 sm:px-0 sm:text-3xl"
+          style={{
+            scale: aboutScale,
+            opacity: aboutOpacity,
+          }}
+        >
+          <span className="text-accent">Hi, my name is Kfir </span>
+          <span className="text-primary">
+            and I&apos;m a Full Stack Developer{" "}
           </span>
-        </a>
-      </footer>
-    </div>
-  )
+          <span className="text-primary">experienced with </span>
+          <GradientText className="mx-auto block">
+            <span className="underline decoration-primary underline-offset-4">
+              React
+            </span>
+            ,{" "}
+            <span className="underline decoration-primary underline-offset-4">
+              TypeScript
+            </span>{" "}
+            and{" "}
+            <span className="underline decoration-primary underline-offset-4">
+              Next.js
+            </span>
+            .
+            <br />
+          </GradientText>
+          <span className="text-primary">
+            Building for the web is my passion.
+          </span>
+        </motion.div>
+      </div>
+
+      <div className="flex h-screen flex-col items-center justify-center space-y-3">
+        <motion.div className="mx-auto w-3/4 text-center text-3xl font-semibold">
+          <span className="text-primary">I&apos;m currently working on </span>
+        </motion.div>
+      </div>
+    </>
+  );
 }
