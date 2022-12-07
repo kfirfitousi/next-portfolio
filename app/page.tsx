@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { motion, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef } from "react";
+import { motion, MotionValue, useScroll, useTransform } from "framer-motion";
 
 import { Github, Linkedin, FileDown } from "lucide-react";
 import { GradientText } from "@/components/gradient-text";
@@ -10,9 +10,11 @@ import { Button } from "@/components/button";
 import { Stack } from "@/components/stack";
 import { Arrow } from "@/components/arrow";
 import Link from "next/link";
+import { Project } from "@/components/project";
 
 export default function Home() {
-  const { scrollYProgress } = useScroll();
+  const container = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ container });
 
   // Log scroll progress for debugging
   useEffect(() => {
@@ -27,7 +29,7 @@ export default function Home() {
   const logoX = useTransform(scrollYProgress, [0, 1 / 5], ["50vw", "10vw"]);
 
   const headingOpacity = useTransform(scrollYProgress, [0, 1 / 20], [1, 0]);
-  const headingScale = useTransform(scrollYProgress, [0, 1 / 5 / 2], [1, 0.2]);
+  const headingScale = useTransform(scrollYProgress, [0, 1 / 10], [1, 0.2]);
 
   const iconsOpacity = useTransform(
     scrollYProgress,
@@ -37,12 +39,12 @@ export default function Home() {
 
   const aboutScale = useTransform(
     scrollYProgress,
-    [0, 1 / 5, 1 / 3],
-    [0.5, 1, 0.01]
+    [0, 1 / 5, 1 / 4],
+    [0.5, 1, 0.4]
   );
   const aboutOpacity = useTransform(
     scrollYProgress,
-    [0, 1 / 5, 1 / 3],
+    [0, 1 / 5, 1 / 4],
     [0, 1, 0]
   );
 
@@ -103,7 +105,7 @@ export default function Home() {
       </motion.div>
 
       {/* Scroll Bar */}
-      <motion.div className="fixed top-[15vh] left-[5vw]">
+      <motion.div className="fixed top-[15vh] left-[5vw] hidden sm:block">
         <motion.div
           className="absolute top-0 left-0 z-10 h-[75vh] w-px origin-top bg-accent"
           style={{
@@ -115,7 +117,7 @@ export default function Home() {
 
       {/* Arrow Down */}
       <motion.div
-        className="fixed bottom-[5vh] left-[50vw] flex -translate-x-1/2 items-center space-x-2 text-primary"
+        className="fixed bottom-[5vh] left-[50vw] flex -translate-x-1/2 items-center space-x-2 whitespace-nowrap text-primary"
         style={{ opacity: arrowOpacity }}
       >
         <motion.a
@@ -148,137 +150,122 @@ export default function Home() {
         </motion.a>
       </motion.div>
 
-      {/* Page 1 - Heading */}
-      <section
-        id="heading"
-        className="flex h-screen flex-col items-center justify-center"
+      <div
+        ref={container}
+        className="h-screen snap-y snap-mandatory overflow-scroll"
       >
-        <motion.div
-          className="flex flex-col space-y-2"
-          style={{
-            scale: headingScale,
-            opacity: headingOpacity,
-          }}
+        {/* Page 1 - Heading */}
+        <section
+          id="heading"
+          className="flex h-screen snap-center flex-col items-center justify-center"
         >
-          <section className="flex items-center">
-            <Stack className="mr-2 inline h-8 w-8" />
-            <GradientText className="mx-auto text-center text-3xl font-semibold sm:text-4xl">
-              <span>Full Stack Developer</span>
+          <motion.div
+            className="flex flex-col space-y-2"
+            style={{
+              scale: headingScale,
+              opacity: headingOpacity,
+            }}
+          >
+            <section className="flex items-center">
+              <Stack className="mr-2 inline h-8 w-8 sm:h-10 sm:w-10" />
+              <GradientText className="mx-auto whitespace-nowrap text-center text-3xl font-semibold sm:text-5xl">
+                Full Stack Developer
+              </GradientText>
+            </section>
+
+            <div className="flex flex-row justify-center space-x-5">
+              <Button
+                label="GitHub"
+                href="https://github.com/kfirfitousi"
+                color="accent"
+                icon={<Github />}
+              />
+              <Button
+                label="CV"
+                href="/Kfir_Fitousi_CV.pdf"
+                color="secondary"
+                icon={<FileDown />}
+              />
+              <Button
+                label="LinkedIn"
+                href="https://linkedin.com/in/kfirp"
+                color="tertiary"
+                icon={<Linkedin />}
+              />
+            </div>
+          </motion.div>
+        </section>
+
+        {/* Page 2 - About Me */}
+        <section
+          id="about-me"
+          className="flex h-screen snap-start flex-col items-center justify-center"
+        >
+          <motion.div
+            className="mx-auto w-screen px-8 text-center text-2xl font-semibold sm:w-3/4 sm:px-0 sm:text-3xl"
+            style={{
+              scale: aboutScale,
+              opacity: aboutOpacity,
+            }}
+          >
+            <span className="text-accent">Hi! my name is Kfir </span>
+            <span className="text-primary">
+              and I&apos;m a Full Stack Developer{" "}
+            </span>
+            <span className="text-primary">experienced with </span>
+            <GradientText className="mx-auto block">
+              <span className="underline decoration-primary underline-offset-4">
+                React
+              </span>
+              ,{" "}
+              <span className="underline decoration-primary underline-offset-4">
+                TypeScript
+              </span>{" "}
+              and{" "}
+              <span className="underline decoration-primary underline-offset-4">
+                Next.js
+              </span>
+              .
+              <br />
             </GradientText>
-          </section>
+            <span className="text-primary">
+              Building for the web is my passion.
+            </span>
+          </motion.div>
+        </section>
 
-          <div className="flex flex-row justify-center space-x-5">
-            <Button
-              label="GitHub"
-              href="https://github.com/kfirfitousi"
-              color="accent"
-              icon={<Github />}
-            />
-            <Button
-              label="CV"
-              href="/Kfir_Fitousi_CV.pdf"
-              color="secondary"
-              icon={<FileDown />}
-            />
-            <Button
-              label="LinkedIn"
-              href="https://linkedin.com/in/kfirp"
-              color="tertiary"
-              icon={<Linkedin />}
-            />
-          </div>
-        </motion.div>
-      </section>
-
-      {/* Page 2 - About Me */}
-      <section
-        id="about-me"
-        className="flex h-screen flex-col items-center justify-center"
-      >
-        <motion.div
-          className="mx-auto w-screen px-8 text-center text-2xl font-semibold sm:w-3/4 sm:px-0 sm:text-3xl"
-          style={{
-            scale: aboutScale,
-            opacity: aboutOpacity,
-          }}
+        {/* Page 3 - Project 1 */}
+        <section
+          id="project-1"
+          className="flex h-screen snap-start flex-col items-center justify-center"
         >
-          <span className="text-accent">Hi, my name is Kfir </span>
-          <span className="text-primary">
-            and I&apos;m a Full Stack Developer{" "}
-          </span>
-          <span className="text-primary">experienced with </span>
-          <GradientText className="mx-auto block">
-            <span className="underline decoration-primary underline-offset-4">
-              React
-            </span>
-            ,{" "}
-            <span className="underline decoration-primary underline-offset-4">
-              TypeScript
-            </span>{" "}
-            and{" "}
-            <span className="underline decoration-primary underline-offset-4">
-              Next.js
-            </span>
-            .
-            <br />
-          </GradientText>
-          <span className="text-primary">
-            Building for the web is my passion.
-          </span>
-        </motion.div>
-      </section>
+          <Project container={container} />
+        </section>
 
-      {/* Page 3 - Project 1 */}
-      <section
-        id="project-1"
-        className="flex h-screen flex-col items-center justify-center"
-      >
-        <motion.div className="flex h-[60vh] w-3/4 flex-row space-x-2">
-          <motion.div className="w-2/3 bg-slate-600" />
-          <motion.div className="mx-auto w-1/3 text-3xl font-semibold text-primary">
-            Project 1
-          </motion.div>
-        </motion.div>
-      </section>
+        {/* Page 4 - Project 2 */}
+        <section
+          id="project-2"
+          className="flex h-screen snap-start flex-col items-center justify-center"
+        >
+          <Project container={container} />
+        </section>
 
-      {/* Page 4 - Project 2 */}
-      <section
-        id="project-2"
-        className="flex h-screen flex-col items-center justify-center"
-      >
-        <motion.div className="flex h-[60vh] w-3/4 flex-row space-x-2">
-          <motion.div className="w-2/3 bg-slate-600" />
-          <motion.div className="mx-auto w-1/3 text-3xl font-semibold text-primary">
-            Project 2
-          </motion.div>
-        </motion.div>
-      </section>
+        {/* Page 5 - Project 3 */}
+        <section
+          id="project-3"
+          className="flex h-screen snap-start flex-col items-center justify-center"
+        >
+          <Project container={container} />
+        </section>
 
-      {/* Page 5 - Project 3 */}
-      <section
-        id="project-3"
-        className="flex h-screen flex-col items-center justify-center"
-      >
-        <motion.div className="flex h-[60vh] w-3/4 flex-row space-x-2">
-          <motion.div className="w-2/3 bg-slate-600" />
-          <motion.div className="mx-auto w-1/3 text-3xl font-semibold text-primary">
-            Project 3
-          </motion.div>
-        </motion.div>
-      </section>
-
-      {/* Page 6 - Project 4 */}
-      <section
-        id="project-4"
-        className="flex h-screen flex-col items-center justify-center"
-      >
-        <motion.div className="flex h-[60vh] w-3/4 flex-row space-x-2">
-          <motion.div className="w-2/3 bg-slate-600" />
-          <motion.div className="mx-auto w-1/3 text-3xl font-semibold text-primary">
-            Project 4
-          </motion.div>
-        </motion.div>
-      </section>
+        {/* Page 6 - Project 4 */}
+        <section
+          id="project-4"
+          className="flex h-screen snap-start flex-col items-center justify-center"
+        >
+          <Project container={container} />
+        </section>
+      </div>
     </>
   );
 }

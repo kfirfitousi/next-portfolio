@@ -64,7 +64,7 @@ export function Button({
       {...props}
     >
       <span className="inline-flex h-full w-fit items-center pl-2">{icon}</span>
-      <span className="inline-flex h-full flex-grow items-baseline px-2 font-light leading-8 sm:text-lg">
+      <span className="inline-flex h-full flex-grow items-baseline px-2 font-light leading-8 sm:text-lg sm:leading-8">
         {label}
       </span>
     </motion.button>
