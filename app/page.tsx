@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef } from "react";
-import { motion, MotionValue, useScroll, useTransform } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { motion, useScroll, useTransform } from "framer-motion";
 
 import { Github, Linkedin, FileDown } from "lucide-react";
 import { GradientText } from "@/components/gradient-text";
@@ -13,64 +13,74 @@ import Link from "next/link";
 import { Project } from "@/components/project";
 
 export default function Home() {
-  const container = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ container });
+  const [screenHeight, setScreenHeight] = useState(0);
+  const container = useRef<HTMLDivElement>(null!);
+  const { scrollY, scrollYProgress } = useScroll({ container });
 
-  // Log scroll progress for debugging
   useEffect(() => {
-    const unsubscribe = scrollYProgress.onChange((v) => {
-      console.log(v);
-    });
+    const set = () => {
+      const { height } = container.current.getBoundingClientRect();
+      setScreenHeight(height);
+    };
+    set();
+    window.addEventListener("resize", set);
 
-    return () => unsubscribe();
-  }, [scrollYProgress]);
+    return () => window.removeEventListener("resize", set);
+  }, []);
 
-  const logoScale = useTransform(scrollYProgress, [0, 1 / 5], [1, 0.5]);
-  const logoX = useTransform(scrollYProgress, [0, 1 / 5], ["50vw", "10vw"]);
+  const logoScale = useTransform(scrollY, [0, screenHeight], [1, 0.5]);
+  const logoX = useTransform(scrollY, [0, screenHeight], ["50vw", "10vw"]);
 
-  const headingOpacity = useTransform(scrollYProgress, [0, 1 / 20], [1, 0]);
-  const headingScale = useTransform(scrollYProgress, [0, 1 / 10], [1, 0.2]);
+  const headingOpacity = useTransform(scrollY, [0, screenHeight / 3], [1, 0]);
+  const headingScale = useTransform(scrollY, [0, screenHeight / 2], [1, 0.2]);
 
   const iconsOpacity = useTransform(
-    scrollYProgress,
-    [0, 1 / 10, 1 / 5],
+    scrollY,
+    [0, screenHeight / 4, screenHeight],
     [0, 0, 1]
   );
 
   const aboutScale = useTransform(
-    scrollYProgress,
-    [0, 1 / 5, 1 / 4],
+    scrollY,
+    [0, screenHeight, screenHeight * 1.5],
     [0.5, 1, 0.4]
   );
   const aboutOpacity = useTransform(
-    scrollYProgress,
-    [0, 1 / 5, 1 / 4],
+    scrollY,
+    [0, screenHeight, screenHeight * 1.5],
     [0, 1, 0]
   );
 
   const arrowOpacity = useTransform(
-    scrollYProgress,
-    [0, 1 / 12, 1 / 7, 2 / 10, 1 / 4, 19 / 20, 1],
-    [1, 0, 0, 1, 0, 0, 1]
+    scrollY,
+    [
+      0,
+      screenHeight / 2,
+      screenHeight,
+      screenHeight * 1.5,
+      screenHeight * 4.9,
+      screenHeight * 5,
+    ],
+    [1, 0, 1, 0, 0, 1]
   );
   const arrowRotateZ = useTransform(
-    scrollYProgress,
-    [0, 18 / 20, 19 / 20],
+    scrollY,
+    [0, screenHeight * 4.9, screenHeight * 5],
     [0, 0, 180]
   );
   const aboutLinkOpacity = useTransform(
-    scrollYProgress,
-    [0, 1 / 5 / 2, 1 / 3],
+    scrollY,
+    [0, screenHeight / 2, screenHeight],
     [1, 0, 0]
   );
   const projectsLinkOpacity = useTransform(
-    scrollYProgress,
-    [0, 1 / 2, 1],
+    scrollY,
+    [0, screenHeight, screenHeight * 1.5],
     [1, 1, 0]
   );
   const backToTopOpacity = useTransform(
-    scrollYProgress,
-    [0, 18 / 20, 19 / 20],
+    scrollY,
+    [0, screenHeight * 4.9, screenHeight * 5],
     [0, 0, 1]
   );
 
@@ -79,6 +89,7 @@ export default function Home() {
       {/* Logo */}
       <motion.div
         className="fixed top-8"
+        initial={{ x: "50vw", scale: 1 }}
         style={{ x: logoX, scale: logoScale }}
       >
         <Logo className="mx-auto h-fit w-48 sm:w-64" />
@@ -92,13 +103,18 @@ export default function Home() {
         }}
       >
         <div className="flex flex-row space-x-4">
-          <Link href="" className="text-accent">
+          <Link href="https://github.com/kfirfitousi" className="text-accent">
             <Github className="h-8 w-8" />
           </Link>
 
-          <FileDown className="h-8 w-8 text-secondary" />
+          <a href="/Kfir_Fitousi_CV.pdf">
+            <FileDown className="h-8 w-8 text-secondary" />
+          </a>
 
-          <Link href="" className="text-tertiary">
+          <Link
+            href="https://www.linkedin.com/in/kfirp/"
+            className="text-tertiary"
+          >
             <Linkedin className="h-8 w-8" />
           </Link>
         </div>
@@ -132,7 +148,7 @@ export default function Home() {
           <Arrow className="h-14" />
         </motion.div>
         <motion.a
-          className="absolute -bottom-6 left-9"
+          className="absolute -bottom-8 left-9"
           href="#heading"
           style={{
             opacity: backToTopOpacity,
@@ -161,6 +177,10 @@ export default function Home() {
         >
           <motion.div
             className="flex flex-col space-y-2"
+            initial={{
+              scale: 1,
+              opacity: 1,
+            }}
             style={{
               scale: headingScale,
               opacity: headingOpacity,
@@ -210,19 +230,18 @@ export default function Home() {
           >
             <span className="text-accent">Hi! my name is Kfir </span>
             <span className="text-primary">
-              and I&apos;m a Full Stack Developer{" "}
+              and I&apos;m a Full Stack Developer experienced with{" "}
             </span>
-            <span className="text-primary">experienced with </span>
-            <GradientText className="mx-auto block">
-              <span className="underline decoration-primary underline-offset-4">
+            <GradientText className="mx-auto">
+              <span className="underline decoration-accent underline-offset-4">
                 React
               </span>
               ,{" "}
-              <span className="underline decoration-primary underline-offset-4">
+              <span className="underline decoration-secondary underline-offset-4">
                 TypeScript
               </span>{" "}
               and{" "}
-              <span className="underline decoration-primary underline-offset-4">
+              <span className="underline decoration-tertiary underline-offset-4">
                 Next.js
               </span>
               .
