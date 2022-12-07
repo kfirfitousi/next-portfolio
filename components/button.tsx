@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion, MotionProps } from "framer-motion";
 import clsx from "clsx";
 import Link from "next/link";
@@ -24,11 +24,13 @@ export function Button({
   ...props
 }: ButtonProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const ref = useRef<HTMLButtonElement>(null);
-  const { left, top } = ref.current?.getBoundingClientRect() ?? {
-    left: 0,
-    top: 0,
-  };
+  const ref = useRef<HTMLButtonElement>(null!);
+  const [rect, setRect] = useState({ left: 0, top: 0 });
+
+  useEffect(() => {
+    const { left, top } = ref.current.getBoundingClientRect();
+    setRect({ left, top });
+  }, []);
 
   const button = (
     <motion.button
@@ -45,7 +47,7 @@ export function Button({
         color === "accent" && "bg-accent hover:border-accent hover:text-accent"
       )}
       onMouseMove={(e) =>
-        setMousePosition({ x: e.clientX - left, y: e.clientY - top })
+        setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
       }
       style={{
         backgroundImage: `radial-gradient(4rem circle at 
