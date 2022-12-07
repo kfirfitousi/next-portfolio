@@ -1,10 +1,5 @@
 import { motion } from "framer-motion";
 
-interface SVGMotionProps<SVGRectElement> {
-  attrX?: number;
-  attrY?: number;
-}
-
 type StackProps = {
   className?: string;
   colorBottom?: string;
