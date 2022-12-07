@@ -9,19 +9,24 @@ import { Logo } from "@/components/logo";
 import { Button } from "@/components/button";
 import { Stack } from "@/components/stack";
 import { Arrow } from "@/components/arrow";
-import Link from "next/link";
 import { Project } from "@/components/project";
+import Link from "next/link";
 
 export default function Home() {
   const [screenHeight, setScreenHeight] = useState(0);
+  const [showProjects, setShowProjects] = useState(false);
   const container = useRef<HTMLDivElement>(null!);
   const { scrollY, scrollYProgress } = useScroll({ container });
 
   useEffect(() => {
+    // only show projects after render, when container ref is set
+    setShowProjects(true);
+
     const set = () => {
       const { height } = container.current.getBoundingClientRect();
       setScreenHeight(height);
     };
+
     set();
     window.addEventListener("resize", set);
 
@@ -253,37 +258,38 @@ export default function Home() {
           </motion.div>
         </section>
 
-        {/* Page 3 - Project 1 */}
-        <section
-          id="project-1"
-          className="flex h-screen snap-start flex-col items-center justify-center"
-        >
-          <Project container={container} />
-        </section>
-
-        {/* Page 4 - Project 2 */}
-        <section
-          id="project-2"
-          className="flex h-screen snap-start flex-col items-center justify-center"
-        >
-          <Project container={container} />
-        </section>
-
-        {/* Page 5 - Project 3 */}
-        <section
-          id="project-3"
-          className="flex h-screen snap-start flex-col items-center justify-center"
-        >
-          <Project container={container} />
-        </section>
-
-        {/* Page 6 - Project 4 */}
-        <section
-          id="project-4"
-          className="flex h-screen snap-start flex-col items-center justify-center"
-        >
-          <Project container={container} />
-        </section>
+        {showProjects && (
+          <>
+            {/* Page 3 - Project 1 */}
+            <section
+              id="project-1"
+              className="flex h-screen snap-start flex-col items-center justify-center"
+            >
+              <Project container={container} />
+            </section>
+            {/*  Page 4 - Project 2 */}
+            <section
+              id="project-2"
+              className="flex h-screen snap-start flex-col items-center justify-center"
+            >
+              <Project container={container} />
+            </section>
+            {/* Page 5 - Project 3 */}
+            <section
+              id="project-3"
+              className="flex h-screen snap-start flex-col items-center justify-center"
+            >
+              <Project container={container} />
+            </section>
+            {/* Page 6 - Project 4 */}
+            <section
+              id="project-4"
+              className="flex h-screen snap-start flex-col items-center justify-center"
+            >
+              <Project container={container} />
+            </section>
+          </>
+        )}
       </div>
     </>
   );
