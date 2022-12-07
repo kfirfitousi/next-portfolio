@@ -11,7 +11,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={clsx("bg-background font-sans", inter.variable)}>
+    <html
+      lang="en"
+      className={clsx("scroll-smooth bg-background font-sans", inter.variable)}
+    >
       <head />
       <body className="min-h-screen">{children}</body>
     </html>
