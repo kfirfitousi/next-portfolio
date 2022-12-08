@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { motion, MotionProps } from "framer-motion";
+import { motion, type MotionProps } from "framer-motion";
 import clsx from "clsx";
 import Link from "next/link";
 
@@ -24,8 +24,8 @@ export function Button({
   ...props
 }: ButtonProps) {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const ref = useRef<HTMLButtonElement>(null!);
   const [rect, setRect] = useState({ left: 0, top: 0 });
+  const ref = useRef<HTMLButtonElement>(null!);
 
   useEffect(() => {
     const { left, top } = ref.current.getBoundingClientRect();
@@ -37,7 +37,7 @@ export function Button({
       ref={ref}
       className={clsx(
         className,
-        "group flex h-8 w-fit flex-row items-stretch justify-center rounded border-2 border-transparent text-background transition-all duration-200 ease-out",
+        "group flex h-8 w-fit flex-row items-stretch justify-center rounded border-2 border-transparent text-background",
         color === "primary" &&
           "bg-primary hover:border-primary hover:text-primary",
         color === "secondary" &&
@@ -50,18 +50,20 @@ export function Button({
         setMousePosition({ x: e.clientX - rect.left, y: e.clientY - rect.top })
       }
       style={{
-        backgroundImage: `radial-gradient(4rem circle at 
-          ${mousePosition.x}px ${mousePosition.y}px, 
-          rgba(200, 200, 200, 0.2) 0%, transparent 100%)`,
+        backgroundImage: `radial-gradient(4rem circle at
+            ${mousePosition.x}px ${mousePosition.y}px,
+            rgba(200, 200, 200, 0.1) 0%, transparent 100%)`,
       }}
       whileHover={{
-        scale: 1.1,
         backgroundColor: "rgba(255, 255, 255, 0)",
         boxShadow: "0 0 5px 1px rgba(0, 0, 0, 0.2)",
-      }}
-      transition={{
-        type: "spring",
-        duration: 0.3,
+        scale: 1.15,
+        transition: {
+          scale: {
+            type: "spring",
+            stiffness: 300,
+          },
+        },
       }}
       {...props}
     >

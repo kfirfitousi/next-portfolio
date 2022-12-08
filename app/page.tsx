@@ -22,6 +22,8 @@ export default function Home() {
     // only show projects after render, when container ref is set
     setShowProjects(true);
 
+    container.current.scrollTo(0, 0);
+
     const set = () => {
       const { height } = container.current.getBoundingClientRect();
       setScreenHeight(height);
@@ -36,13 +38,23 @@ export default function Home() {
   const logoScale = useTransform(scrollY, [0, screenHeight], [1, 0.5]);
   const logoX = useTransform(scrollY, [0, screenHeight], ["50vw", "10vw"]);
 
-  const headingOpacity = useTransform(scrollY, [0, screenHeight / 3], [1, 0]);
+  const headingOpacity = useTransform(scrollY, [0, screenHeight / 2.5], [1, 0]);
   const headingScale = useTransform(scrollY, [0, screenHeight / 2], [1, 0.2]);
+  const headingX = useTransform(
+    scrollY,
+    [0, screenHeight / 2],
+    ["0vw", "40vw"]
+  );
 
   const iconsOpacity = useTransform(
     scrollY,
     [0, screenHeight / 4, screenHeight],
     [0, 0, 1]
+  );
+  const iconsZIndex = useTransform(
+    scrollY,
+    [0, screenHeight / 4, screenHeight],
+    [-1, -1, 0]
   );
 
   const aboutScale = useTransform(
@@ -56,7 +68,7 @@ export default function Home() {
     [0, 1, 0]
   );
 
-  const arrowOpacity = useTransform(
+  const navOpacity = useTransform(
     scrollY,
     [
       0,
@@ -70,7 +82,7 @@ export default function Home() {
   );
   const arrowRotateZ = useTransform(
     scrollY,
-    [0, screenHeight * 4.9, screenHeight * 5],
+    [0, screenHeight * 4.8, screenHeight * 5],
     [0, 0, 180]
   );
   const aboutLinkOpacity = useTransform(
@@ -103,25 +115,57 @@ export default function Home() {
       {/* Icons */}
       <motion.div
         className="fixed top-16 flex w-full justify-end pr-[10vw]"
+        initial={{
+          opacity: 0,
+          zIndex: -1,
+        }}
         style={{
           opacity: iconsOpacity,
+          zIndex: iconsZIndex,
         }}
       >
         <div className="flex flex-row space-x-4">
-          <Link href="https://github.com/kfirfitousi" className="text-accent">
-            <Github className="h-8 w-8" />
-          </Link>
-
-          <a href="/Kfir_Fitousi_CV.pdf">
-            <FileDown className="h-8 w-8 text-secondary" />
-          </a>
-
-          <Link
-            href="https://www.linkedin.com/in/kfirp/"
-            className="text-tertiary"
+          <motion.div
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+            }}
           >
-            <Linkedin className="h-8 w-8" />
-          </Link>
+            <Link href="https://github.com/kfirfitousi" className="text-accent">
+              <Github className="h-8 w-8" />
+            </Link>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+            }}
+          >
+            <a href="/Kfir_Fitousi_CV.pdf">
+              <FileDown className="h-8 w-8 text-secondary" />
+            </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ scale: 1 }}
+            whileHover={{ scale: 1.2 }}
+            transition={{
+              type: "spring",
+              stiffness: 300,
+            }}
+          >
+            <Link
+              href="https://www.linkedin.com/in/kfirp/"
+              className="text-tertiary"
+            >
+              <Linkedin className="h-8 w-8" />
+            </Link>
+          </motion.div>
         </div>
       </motion.div>
 
@@ -136,13 +180,16 @@ export default function Home() {
         <div className="h-[75vh] w-px bg-primary bg-opacity-20" />
       </motion.div>
 
-      {/* Arrow Down */}
+      {/* Nav */}
       <motion.div
         className="fixed bottom-[5vh] left-[50vw] flex -translate-x-1/2 items-center space-x-2 whitespace-nowrap text-primary"
-        style={{ opacity: arrowOpacity }}
+        initial={{ opacity: 1 }}
+        style={{ opacity: navOpacity }}
       >
         <motion.a
           href="#about-me"
+          className="hover:text-accent"
+          initial={{ opacity: 1 }}
           style={{
             opacity: aboutLinkOpacity,
           }}
@@ -153,8 +200,9 @@ export default function Home() {
           <Arrow className="h-14" />
         </motion.div>
         <motion.a
-          className="absolute -bottom-8 left-9"
+          className="absolute -bottom-8 left-9 hover:text-accent"
           href="#heading"
+          initial={{ opacity: 0 }}
           style={{
             opacity: backToTopOpacity,
           }}
@@ -163,6 +211,8 @@ export default function Home() {
         </motion.a>
         <motion.a
           href="#project-1"
+          className="hover:text-accent"
+          initial={{ opacity: 1 }}
           style={{
             opacity: projectsLinkOpacity,
           }}
@@ -173,7 +223,7 @@ export default function Home() {
 
       <div
         ref={container}
-        className="h-screen snap-y snap-mandatory overflow-scroll"
+        className="h-screen snap-y snap-mandatory overflow-scroll scroll-smooth"
       >
         {/* Page 1 - Heading */}
         <section
@@ -185,10 +235,12 @@ export default function Home() {
             initial={{
               scale: 1,
               opacity: 1,
+              x: "0vw",
             }}
             style={{
               scale: headingScale,
               opacity: headingOpacity,
+              x: headingX,
             }}
           >
             <section className="flex items-center">

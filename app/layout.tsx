@@ -13,7 +13,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={clsx("scroll-smooth bg-background font-sans", inter.variable)}
+      className={clsx("bg-background font-sans", inter.variable)}
     >
       <head />
       <body className="min-h-screen">{children}</body>
